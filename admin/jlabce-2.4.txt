@@ -1,0 +1,52 @@
+#
+#
+# JLab CE 2.4 specs
+#
+# In Bob's original ROOT compilation notes he lists the following
+# features as turned on:
+#
+#  roofit minuit2 pyroot gdml unrun qt qtgsi mysql reflex cintex fftw3 soversion mathmore
+#
+#
+# and the following as explicitly turned off:
+#
+#  shadowpw
+#
+#
+# I added the following features as on (gsl and mlp are required by tmva):
+#
+#  gsl mlp tmva
+#
+#
+# The spack root package file makes a subset of all features
+# available so there is not complete control over the build 
+# (unless we supercede the root package file in spack with our
+# own). Reviewing the existing package file though, most of 
+# these features are turned on(off) by default to match Bob's
+# settings. The discrepancies are: 
+#
+# 1. The spack package.py file for root says support for qt.
+#    was dropped after root 6.18.00 so we do not include 
+#    qt or qtgsi
+#
+# 2. Neither the reflex nor cintex features are mentioned in
+#    the package file or on the root website. I suspect they
+#    were dropped some time ago (or were made non-optional)
+#
+# 3. The packages minuit2, pyroot, fftw3, and mathmore are
+#    all turned on by the variants minuit, python, fftw,
+#    and math respectively. Furthermore, they are all on by
+#    default and so are not explicitly given in the spec here.
+#
+ 
+  
+
+root@6.20.04+mysql+gsl+mlp+tmva^hwloc@2.1.0
+scons@2.5.1
+qt@5.15.2
+clhep@2.4.1.3
+geant4@10.6.2
+geant4-data@10.6.2
+xerces-c@3.2.3
+
+
