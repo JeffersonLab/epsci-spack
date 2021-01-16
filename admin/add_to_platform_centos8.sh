@@ -15,8 +15,8 @@
 
 spack_os=centos
 spack_ver=8.3.2011
-spack_compiler=9.3.0
-#spack_compiler=system
+#spack_compiler=9.3.0
+spack_compiler=system
 spack_build_threads=16
 spack_packages_file=$1
 
