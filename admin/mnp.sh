@@ -56,6 +56,16 @@ if [ ! -d ${spack_top} ] ; then
 	echo "Checking out primary spack repository ..."
 	git clone https://github.com/spack/spack.git ${spack_top}
 fi
+
+# Install a config.yaml file to override defaults. This is needed
+# to force builds to use /scratch instead of /tmp for builds.
+if [ ! -f ${spack_top}/etc/spack/config.yaml ] ; then
+	echo "Copying config.yaml to ${spack_top}/etc/spack/config.yaml ..."
+	cp config.yaml ${spack_top}/etc/spack/config.yaml
+fi
+
+# Source main spack environment setup script
+echo "Sourcing ${spack_top}/share/spack/setup-env.sh"
 source ${spack_top}/share/spack/setup-env.sh
 
 # Checkout eic-spack repository (if needed)
