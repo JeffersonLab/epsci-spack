@@ -1,0 +1,48 @@
+Common subdirectories: JANA_v0.8.2/doc and JANA_v0.8.2_fixed/doc
+Common subdirectories: JANA_v0.8.2/.git and JANA_v0.8.2_fixed/.git
+Common subdirectories: JANA_v0.8.2/macros and JANA_v0.8.2_fixed/macros
+Common subdirectories: JANA_v0.8.2/SBMS and JANA_v0.8.2_fixed/SBMS
+diff -u JANA_v0.8.2/SConstruct JANA_v0.8.2_fixed/SConstruct
+--- JANA_v0.8.2/SConstruct	2021-01-18 09:46:35.394712768 -0500
++++ JANA_v0.8.2_fixed/SConstruct	2021-01-18 10:03:05.639704102 -0500
+@@ -31,7 +31,7 @@
+ VARIANT_DIR = ARGUMENTS.get('VARIANT-DIR',".%s" % (osname))
+ 
+ # Get architecture name
+-arch = ROOT_CFLAGS = subprocess.Popen(["uname"], stdout=subprocess.PIPE).communicate()[0].strip()
++arch = ROOT_CFLAGS = str(subprocess.Popen(["uname"], stdout=subprocess.PIPE).communicate()[0].strip())
+ 
+ # Setup initial environment
+ installdir = PREFIX
+@@ -92,9 +92,9 @@
+ # Get compiler name
+ compiler = 'unknown'
+ compiler_string = subprocess.Popen([env['CC'],"-v"], stderr=subprocess.PIPE).communicate()[1]
+-if 'clang' in compiler_string:
++if b'clang' in compiler_string:
+ 	compiler = 'clang'
+-if 'gcc' in compiler_string and 'clang' not in compiler_string:
++if b'gcc' in compiler_string and b'clang' not in compiler_string:
+ 	compiler = 'gcc'
+ env.Replace(COMPILER = compiler)
+ 
+@@ -133,7 +133,7 @@
+ sbms_config.mk_jana_config_script(env)
+ 
+ # build all src
+-SConscript('src/SConscript', variant_dir=VARIANT_DIR, exports='env osname', duplicate=0)
++SConscript(b'src/SConscript', variant_dir=VARIANT_DIR, exports='env osname', duplicate=0, missing_exist=0)
+ 
+ # install scripts
+ SConscript('scripts/SConscript', exports='env osname', duplicate=0)
+@@ -143,7 +143,7 @@
+ 
+ # Create setenv and make link to src if user explicitly specified "install" target
+ build_targets = map(str,BUILD_TARGETS)
+-if len(build_targets)>0:
++if len(list(build_targets))>0:
+ 	if 'install' in build_targets:
+ 		import sbms_setenv
+ 		sbms_setenv.mk_setenv_csh(env)
+Common subdirectories: JANA_v0.8.2/scripts and JANA_v0.8.2_fixed/scripts
+Common subdirectories: JANA_v0.8.2/src and JANA_v0.8.2_fixed/src
