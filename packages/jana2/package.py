@@ -13,7 +13,7 @@ class Jana2(CMakePackage):
     url      = "http://github.com/JeffersonLab/JANA2/archive/v2.0.3.tar.gz"
     git      = "http://github.com/JeffersonLab/JANA2.git"
 
-    maintainer = ["wdconinc"]
+    maintainer = ["davidl"]
 
     version('2.0.3',       sha256='fd34c40e2d6660ec08aca9208999dd9c8fe17de21c144ac68b6211070463e415')
     version('2.0.2',       sha256='161d29c2b1efbfb36ec783734b45dff178b0c6bd77a2044d5a8829ba5b389b14')
@@ -31,6 +31,10 @@ class Jana2(CMakePackage):
     depends_on('cppzmq', when='+zmq')
     depends_on('root', when='+root')
     depends_on('xerces-c')
+    
+    # This patches a bug in the cmake/MakeConfig.cmake file
+    # for v2.0.3 related to testing the XERCESCROOT envar
+    patch('MakeConfig.cmake_xerces.patch', level=1, when='@2.0.3')
 
     def cmake_args(self):
         args = []

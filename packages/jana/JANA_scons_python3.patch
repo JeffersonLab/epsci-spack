@@ -1,0 +1,154 @@
+--- JANA_v0.8.2/SConstruct	2021-01-18 09:46:35.394712768 -0500
++++ JANA_v0.8.2_fixed/SConstruct	2021-01-18 10:03:05.639704102 -0500
+@@ -31,7 +31,7 @@
+ VARIANT_DIR = ARGUMENTS.get('VARIANT-DIR',".%s" % (osname))
+ 
+ # Get architecture name
+-arch = ROOT_CFLAGS = subprocess.Popen(["uname"], stdout=subprocess.PIPE).communicate()[0].strip()
++arch = ROOT_CFLAGS = str(subprocess.Popen(["uname"], stdout=subprocess.PIPE).communicate()[0].strip())
+ 
+ # Setup initial environment
+ installdir = PREFIX
+@@ -92,9 +92,9 @@
+ # Get compiler name
+ compiler = 'unknown'
+ compiler_string = subprocess.Popen([env['CC'],"-v"], stderr=subprocess.PIPE).communicate()[1]
+-if 'clang' in compiler_string:
++if b'clang' in compiler_string:
+ 	compiler = 'clang'
+-if 'gcc' in compiler_string and 'clang' not in compiler_string:
++if b'gcc' in compiler_string and b'clang' not in compiler_string:
+ 	compiler = 'gcc'
+ env.Replace(COMPILER = compiler)
+ 
+@@ -133,7 +133,7 @@
+ sbms_config.mk_jana_config_script(env)
+ 
+ # build all src
+-SConscript('src/SConscript', variant_dir=VARIANT_DIR, exports='env osname', duplicate=0)
++SConscript(b'src/SConscript', variant_dir=VARIANT_DIR, exports='env osname', duplicate=0, missing_exist=0)
+ 
+ # install scripts
+ SConscript('scripts/SConscript', exports='env osname', duplicate=0)
+@@ -143,7 +143,7 @@
+ 
+ # Create setenv and make link to src if user explicitly specified "install" target
+ build_targets = map(str,BUILD_TARGETS)
+-if len(build_targets)>0:
++if len(list(build_targets))>0:
+ 	if 'install' in build_targets:
+ 		import sbms_setenv
+ 		sbms_setenv.mk_setenv_csh(env)
+--- JANA_v0.8.2/SBMS/sbms.py	2021-01-18 09:50:20.382073896 -0500
++++ JANA_v0.8.2_fixed/SBMS/sbms.py	2021-01-18 09:53:57.202385770 -0500
+@@ -308,17 +308,17 @@
+ 
+ 	modname = "sbms_%s" % platform
+ 	if (int(env['SHOWBUILD']) > 0):
+-		print "looking for %s.py" % modname
++		print("looking for %s.py" % modname)
+ 	try:
+ 		InitENV = getattr(__import__(modname), "InitENV")
+ 
+ 		# Run the InitENV function (if found)
+ 		if(InitENV != None):
+-			print "sbms : Applying settings for platform %s" % platform
++			print("sbms : Applying settings for platform %s" % platform)
+ 			InitENV(env)
+ 
+-	except ImportError,e:
+-		if (int(env['SHOWBUILD']) > 0): print "%s" % e
++	except ImportError as e:
++		if (int(env['SHOWBUILD']) > 0): print("%s" % e)
+ 		pass
+ 
+ 
+@@ -386,18 +386,18 @@
+ 	for opt in options:
+ 		myargs = opt.split()
+ 		if(env['SHOWBUILD'] >0):
+-			print 'Test compiling %s:' % name
+-			print args + myargs
++			print('Test compiling %s:' % name)
++			print(args + myargs)
+ 		res = subprocess.call(args + myargs, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+ 		if res==0:
+-			if(env['SHOWBUILD'] >0): print '---Succeeded'
++			if(env['SHOWBUILD'] >0): print('---Succeeded')
+ 			ret = myargs
+ 			break
+ 		else:
+ 			if(env['SHOWBUILD'] >1):
+-				print '----Failed. Test file content was:------'
+-				print subprocess.call(['cat', ifname])
+-				print '----------------------------------------'
++				print('----Failed. Test file content was:------')
++				print(subprocess.call(['cat', ifname]))
++				print('----------------------------------------')
+ 				
+ 	
+ 	if os.path.exists(ifname): os.unlink(ifname);
+@@ -625,7 +625,7 @@
+ 		elif os.path.exists(rootcintpath):
+ 			bld = SCons.Script.Builder(action = rootcintaction, suffix='_Dict.cc', src_suffix='.h')
+ 		else:
+-			print 'Neither rootcint nor rootcling exists. Unable to create ROOT dictionaries if any encountered.'
++			print('Neither rootcint nor rootcling exists. Unable to create ROOT dictionaries if any encountered.')
+ 			return
+ 
+ 		env.Append(BUILDERS = {'ROOTDict' : bld})
+@@ -642,13 +642,13 @@
+ 		curpath = os.getcwd()
+ 		srcpath = env.Dir('.').srcnode().abspath
+ 		if(int(env['SHOWBUILD'])>1):
+-			print "---- Scanning for headers to generate ROOT dictionaries in: %s" % srcpath
++			print("---- Scanning for headers to generate ROOT dictionaries in: %s" % srcpath)
+ 		os.chdir(srcpath)
+ 		for f in glob.glob('*.[h|hh|hpp]'):
+ 			if 'ClassDef' in open(f).read():
+ 				env.AppendUnique(ALL_SOURCES = env.ROOTDict(f))
+ 				if(int(env['SHOWBUILD'])>1):
+-					print "       ROOT dictionary for %s" % f
++					print("       ROOT dictionary for %s" % f)
+ 		os.chdir(curpath)
+ 
+ 
+--- JANA_v0.8.2/SBMS/sbms_config.py	2021-01-18 09:46:35.393712762 -0500
++++ JANA_v0.8.2_fixed/SBMS/sbms_config.py	2021-01-18 09:54:48.728697532 -0500
+@@ -55,7 +55,7 @@
+ 	ofdirname = '%s/JANA' % env['variant_dir']
+ 	ofdir = '%s' % env.Dir(ofdirname)
+ 	ofname = '%s/jana_config.h' % ofdir
+-	print 'sbms : Making jana_config.h in %s' % ofdir
++	print('sbms : Making jana_config.h in %s' % ofdir)
+ 	
+ 	# ROOT
+ 	HAVE_ROOT = 0
+@@ -92,12 +92,12 @@
+ 
+ 	# If showing build, print config. results
+ 	if(env['SHOWBUILD']>0):
+-		print '--- Configuration results ----'
+-		print '    HAVE_ROOT = %d' % HAVE_ROOT
+-		print '  HAVE_XERCES = %d' % HAVE_XERCES
+-		print '      XERCES3 = %d' % XERCES3
+-		print '    HAVE_CCDB = %d' % HAVE_CCDB
+-		print '------------------------------'
++		print('--- Configuration results ----')
++		print('    HAVE_ROOT = %d' % HAVE_ROOT)
++		print('  HAVE_XERCES = %d' % HAVE_XERCES)
++		print('      XERCES3 = %d' % XERCES3)
++		print('    HAVE_CCDB = %d' % HAVE_CCDB)
++		print('------------------------------')
+ 		
+ 	str = ''
+ 	
+@@ -147,7 +147,7 @@
+ 	ofdir = '%s' % env.Dir(ofdirname)
+ 	ofname = '%s/jana-config' % ofdir
+ 
+-	print 'sbms : Making jana-config in %s' % ofdir
++	print('sbms : Making jana-config in %s' % ofdir)
+ 	
+ 	# ROOT
+ 	HAVE_ROOT = 0
