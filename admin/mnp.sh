@@ -77,7 +77,6 @@ fi
 # Add eic-spack repo to our list if it is not already there
 spack repo list | grep ${eic_spack_top} > /dev/null
 [ $? != 0 ] && spack repo add ${eic_spack_top}
-#[ ! $(spack repo list | grep -q ${eic_spack_top}) ] && spack repo add ${eic_spack_top}
 
 # Checkout epsci-spack repository (if needed)
 epsci_spack_top=${SPACK_ROOT}/var/spack/repos/epsci-spack
@@ -87,7 +86,7 @@ if [ ! -d ${epsci_spack_top} ] ; then
 else
 	git --git-dir=${epsci_spack_top}/.git pull --ff-only  # Update to latest epsci-spack
 fi
-# Add eic-spack repo to our list if it is not already there
+# Add epsci-spack repo to our list if it is not already there
 spack repo list | grep ${epsci_spack_top} > /dev/null
 [ $? != 0 ] && spack repo add ${epsci_spack_top}
 
