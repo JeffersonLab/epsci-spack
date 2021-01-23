@@ -1,0 +1,26 @@
+modules:
+   enable::
+     - lmod
+   lmod:
+     core_compilers:
+       - 'gcc@XXX'
+     hierarchy:
+       - mpi
+     hash_length: 0
+     whitelist:
+       - gcc
+     blacklist:
+       - '%gcc@XXX'
+       - 'arch=linux-centos7-zen2'
+     all:
+       filter:
+         environment_blacklist:
+           - "C_INCLUDE_PATH"
+           - "CPLUS_INCLUDE_PATH"
+           - "LIBRARY_PATH"
+       environment:
+         set:
+           '{name}_ROOT': '{prefix}'
+     projections:
+       all:          '{name}/{version}'
+

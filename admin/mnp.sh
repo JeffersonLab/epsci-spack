@@ -103,6 +103,16 @@ if [ ${spack_compiler} != $SYSTEM_GCCVERSION ] ; then
 	spack compiler find
 fi
 
+# Install the modules.yaml file if not already installed. Replace
+# the "XXX" string in the file here with the system compiler
+# version.
+if [ ! -f ${spack_top}/etc/spack/modules.yaml ] ; then
+	echo "Copying modules.yaml to ${spack_top}/etc/spack/modules.yaml ..."
+	cat modules.yaml | sed -e "s/XXX/${SYSTEM_GCCVERSION}/g" > ${spack_top}/etc/spack/modules.yaml
+	#cp config.yaml ${spack_top}/etc/spack/config.yaml
+fi
+
+
 # Install minimal set of packages
 packages="unzip lmod"
 
