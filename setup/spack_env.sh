@@ -88,6 +88,8 @@ esac
 # by the the modules_setup file
 setupfile="/cvmfs/oasis.opensciencegrid.org/jlab/epsci/${os}/${ver}/share/spack/setup-env.sh"
 if [ -f ${setupfile} ] ; then
+
+	# Source the SPACK setup-env.sh file
 	cmd="source ${setupfile}"
 	echo $cmd
 	$cmd
