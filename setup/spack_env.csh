@@ -161,7 +161,6 @@ if ( -f ${setupfile} ) then
 			# heirarchical modules below
 			set spackarch=`spack arch`	
 			set spackgenarch=`echo $spackarch | cut -d '-' -f1,2`-x86_64 # this is faster than: set spackgenarch=`spack arch -p`-`spack arch -o`-x86_64
-			module unuse ${SPACK_ROOT}/share/spack/modules/${spackarch} ${SPACK_ROOT}/share/spack/modules/${spackgenarch}
 
 			# Setup to use heirarchical lmod modules from spack.
 			# n.b. At one point it seemed running "spack location"
@@ -176,13 +175,14 @@ if ( -f ${setupfile} ) then
 			#spack load $mod
 			set _lmod_loc=`spack location -i $mod`
 			source ${_lmod_loc}/lmod/lmod/init/cshrc
+			module unuse ${SPACK_ROOT}/share/spack/modules/${spackarch} ${SPACK_ROOT}/share/spack/modules/${spackgenarch}
 			module use ${SPACK_ROOT}/share/spack/lmod/${spackgenarch}/Core
 		else
 			
 			# Any modules other than lmod should be loaded with "module load"
 			set cmd="module load $mod"
-			echo $cmd
-			$cmd
+			if ( $?loginsh ) echo $cmd
+			eval $cmd
 
 		endif
 
