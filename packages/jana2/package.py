@@ -15,10 +15,15 @@ class Jana2(CMakePackage):
 
     maintainer = ["davidl"]
 
+    version('2.0.4',       sha256='1352304f49862a54b5089bd823cef1c63fca2e00')
     version('2.0.3',       sha256='fd34c40e2d6660ec08aca9208999dd9c8fe17de21c144ac68b6211070463e415')
     version('2.0.2',       sha256='161d29c2b1efbfb36ec783734b45dff178b0c6bd77a2044d5a8829ba5b389b14')
     version('2.0.1',       sha256='1471cc9c3f396dc242f8bd5b9c8828b68c3c0b72dbd7f0cfb52a95e7e9a8cf31')
     version('2.0.0-alpha', sha256='4a093caad5722e9ccdab3d3f9e2234e0e34ef2f29da4e032873c8e08e51e0680')
+
+    variant('python',
+            default=False,
+            description='Use python for janapy, etc')
 
     variant('root',
             default=False,
@@ -38,6 +43,11 @@ class Jana2(CMakePackage):
 
     def cmake_args(self):
         args = []
+
+        # Python
+        if '+python' in self.spec:
+            args.append('-DUSE_PYTHON=ON')
+
         # ZeroMQ directory
         if '+zmq' in self.spec:
             args.append('-DZEROMQ_DIR=%s'
