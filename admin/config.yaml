@@ -1,3 +1,13 @@
+#
+# This file is installed by the mnp.sh script which is
+# itself run by a make_new_platform_XXX.sh script.
+# It should be installed in the ${spack_top}/etc/spack
+# directory.
+#
+# This is used to make spack use the scratch disk for 
+# building packages rather than the default /tmp which
+# can easily fill up.
+#
 config:
   build_stage:
   - /scratch/$user/spack-stage

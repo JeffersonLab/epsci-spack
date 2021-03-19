@@ -1,3 +1,12 @@
+#
+# This file is installed by the mnp.sh script which is
+# itself run by a make_new_platform_XXX.sh script.
+# It should be installed in the ${spack_top}/etc/spack
+# directory.
+#
+# This is mainly used to support the heirarchical modules
+# feature in lmod. 
+#
 modules:
    enable::
      - lmod
