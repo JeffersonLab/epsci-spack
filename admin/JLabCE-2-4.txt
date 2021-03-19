@@ -38,15 +38,30 @@
 #    and math respectively. Furthermore, they are all on by
 #    default and so are not explicitly given in the spec here.
 #
- 
+# 4. The mysql variant is turned off by default in spack so
+#    I turn it on here.
+#
+#
+# Note that jana2 is built with root support. It should have
+# exactly the same spec as the root build so that another
+# version of root is not built. We could force this by
+# not specifying root explicitly, but only as a dependency
+# on jana2. This is undesirable though since running "spack gc"
+# to remove unneeded dependencies would then delete root if
+# jana2 were removed for some reason. Not a likely scenario,
+# but it seems better to make root a top-level package install.
   
 
-root@6.20.04+mysql+gsl+mlp+tmva^hwloc@2.1.0
-scons@2.5.1
-qt@5.15.2
-clhep@2.4.1.3
-geant4@10.6.2
-geant4-data@10.6.2
-xerces-c@3.2.3
-
+#root@6.20.04+mysql+gsl+mlp+tmva^hwloc@2.1.0
+#jana2@2.0.3+zmq+root^root@6.20.04+mysql+gsl+mlp+tmva^hwloc@2.1.0
+#scons@2.5.1
+#qt@5.15.2
+#clhep@2.4.1.3
+#geant4@10.6.2
+#geant4-data@10.6.2
+xerces-c@3.2.3 cxxstd=11
+#ccdb@1.06.06^scons@2.5.1^mysql@8.0.19
+#jana@0.8.2^xerces-c@3.2.3^root@6.20.04+mysql+gsl+mlp+tmva^hwloc@2.1.0^ccdb@1.06.06^scons@2.5.1^mysql@8.0.19
+#jana@0.8.2^xerces-c@3.2.3 cxxstd=11 ^root@6.20.04+mysql+gsl+mlp+tmva^hwloc@2.1.0^ccdb@1.06.06^mysql@8.0.19
+#jana@0.8.2~root^xerces-c@3.2.3^ccdb@1.06.06^mysql@8.0.19
 
