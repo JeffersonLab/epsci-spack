@@ -105,7 +105,7 @@ foreach s ( $* )
 	if ( $s == '-h' ) then
 		# Help
 		spack_env_usage  # This will exit the script after printing the usage statements
-	else if ( "$s" =~ 'os=' ) then
+	else if ( "$s" =~ 'os=*' ) then
 		# OS/Release
 		set os=`echo $s | cut -d '=' -f2 | cut -d '/' -f1`
 		set ver=`echo $s | cut -d '=' -f2 | cut -d '/' -f2`
