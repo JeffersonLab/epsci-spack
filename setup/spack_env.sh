@@ -177,7 +177,7 @@ if [ -f ${setupfile} ] ; then
 			#  set _lmod_loc = `echo $CMAKE_PREFIX_PATH | sed -e 's/:/\n/g' | grep lmod | head -n 1`
 			# Subsequent testing did not support that. I'm leaving this
 			# comment here in case we need to revisit using the above alternative
-			cmd="spack load $mod"
+			cmd="spack load --first $mod"
 			[[ $- == *i* ]] && echo $cmd
 			$cmd
 			#spack load $mod
