@@ -11,4 +11,6 @@ manually copy them to:
 
 The setup scripts in this directory are here so they
 can be edited and pushed back to the GitHub repository.
-
+This also provides a way to test the scripts without
+a partially modified copy accidentally getting published 
+by the cronjob to CVMFS.
