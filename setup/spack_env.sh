@@ -181,7 +181,8 @@ if [ -f ${setupfile} ] ; then
 			[[ $- == *i* ]] && echo $cmd
 			$cmd
 			#spack load $mod
-			_lmod_loc=$(spack location -i $mod)
+			#_lmod_loc=$(spack location -i $mod)  # this fails if more than one lmod is present
+			_lmod_loc=$(spack find -p $mod | grep lmod | head -n 1 | awk '{print $2}')
 			source ${_lmod_loc}/lmod/lmod/init/bash
 			module unuse ${SPACK_ROOT}/share/spack/modules/${spackarch} ${SPACK_ROOT}/share/spack/modules/${spackgenarch}
 			module use ${SPACK_ROOT}/share/spack/lmod/${spackgenarch}/Core

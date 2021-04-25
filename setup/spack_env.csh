@@ -173,7 +173,8 @@ if ( -f ${setupfile} ) then
 			if ( $?loginsh ) echo $cmd
 			eval $cmd
 			#spack load $mod
-			set _lmod_loc=`spack location -i $mod`
+			#set _lmod_loc=`spack location -i $mod`  # this fails if more than one lmod is present
+			set _lmod_loc=`spack find -p $mod | grep lmod | head -n 1 | awk '{print $2}'`
 			source ${_lmod_loc}/lmod/lmod/init/cshrc
 			module unuse ${SPACK_ROOT}/share/spack/modules/${spackarch} ${SPACK_ROOT}/share/spack/modules/${spackgenarch}
 			module use ${SPACK_ROOT}/share/spack/lmod/${spackgenarch}/Core
