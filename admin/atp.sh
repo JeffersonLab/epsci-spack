@@ -33,8 +33,23 @@ arch="linux-${spack_os}${spack_ver_major}-x86_64"
 
 echo "specifying arch as: ${arch}"
 
+# Additional repositories (eic, epsci) are listed in a users
+# personal ~/.spack directory. These are automatically added 
+# by mnp.sh, but if a different user is runing this script
+# then they may need to be added. Check here if they are and 
+# add them if needed.
+eic_spack_top=${SPACK_ROOT}/var/spack/repos/eic-spack
+epsci_spack_top=${SPACK_ROOT}/var/spack/repos/epsci-spack
+if [ -d ${eic_spack_top} ] ; then
+	spack repo list | grep ${eic_spack_top} > /dev/null
+	[ $? != 0 ] && echo "Adding eic-spack repository to your personal config ..." && spack repo add ${eic_spack_top}
+fi
+if [ -d ${epsci_spack_top} ] ; then
+	spack repo list | grep ${epsci_spack_top} > /dev/null
+	[ $? != 0 ] && echo "Adding epsci-spack repository to your personal config ..." && spack repo add ${epsci_spack_top}
+fi
+
 # Setup to use spack repositories.
-# Assume all repos were added when make_new_platform.sh was run.
 spack_top=/cvmfs/oasis.opensciencegrid.org/jlab/epsci/${spack_os}/${spack_ver}
 source ${spack_top}/share/spack/setup-env.sh
 
