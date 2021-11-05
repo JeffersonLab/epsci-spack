@@ -57,6 +57,11 @@ if [ ! -d ${spack_top} ] ; then
 	git clone https://github.com/spack/spack.git ${spack_top}
 fi
 
+if [ ! -d ${spack_top}/etc/spack ] ; then
+	echo "Making config file directory "${spack_top}/etc/spack
+	mkdir -p ${spack_top}/etc/spack
+fi
+
 # Install a config.yaml file to override defaults. This is needed
 # to force builds to use /scratch instead of /tmp for builds.
 if [ ! -f ${spack_top}/etc/spack/config.yaml ] ; then
@@ -64,7 +69,9 @@ if [ ! -f ${spack_top}/etc/spack/config.yaml ] ; then
 	cp config.yaml ${spack_top}/etc/spack/config.yaml
 fi
 
-# Source main spack environment setup script
+# Source main spack environment setup script. Note that when doing this
+# in docker with qemu-x we must set SPACK_ROOT first.
+export SPACK_ROOT=${spack_top}
 echo "Sourcing ${spack_top}/share/spack/setup-env.sh"
 source ${spack_top}/share/spack/setup-env.sh
 
