@@ -48,7 +48,7 @@
 # and format it with a case-sensitive filesystem. Them mount it
 # and point MYDIR there.
 
-MYDIR=/Volumes/M1spack
+MYDIR=/Volumes/MySPACK
 #MYDIR=/Users/davidl/work/2021.11.03.spack
 
 spack_os=centos
@@ -60,11 +60,11 @@ spack_top=/cvmfs/oasis.opensciencegrid.org/jlab/epsci/${spack_os}/${spack_ver}
 
 spack_arch=`uname -m`
 docker_arch='unknown'
-if [ spack_arch == 'arm64' ] then;
+if [ $spack_arch == 'arm64' ] ; then
 	spack_arch='aarch64'
 	docker_arch='arm64'
 fi
-if [ spack_arch == 'amd64' ] then ;
+if [ $spack_arch == 'amd64' ] || [ $spack_arch == 'x86_64' ] ; then
 	spack_arch='x86_64'
 	docker_arch='amd64'
 fi
