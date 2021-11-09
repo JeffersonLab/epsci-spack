@@ -124,8 +124,7 @@ fi
 # version.
 if [ ! -f ${spack_top}/etc/spack/modules.yaml ] ; then
 	echo "Copying modules.yaml to ${spack_top}/etc/spack/modules.yaml ..."
-	cat modules.yaml | sed -e "s/XXX/${SYSTEM_GCCVERSION}/g" > ${spack_top}/etc/spack/modules.yaml
-	#cp config.yaml ${spack_top}/etc/spack/config.yaml
+	cat modules.yaml | sed -e "s/XXX/${SYSTEM_GCCVERSION}/g" | sed -e "s/YYY/${spack_full_arch}/g" > ${spack_top}/etc/spack/modules.yaml
 fi
 
 
