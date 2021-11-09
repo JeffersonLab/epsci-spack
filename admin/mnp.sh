@@ -49,6 +49,13 @@ spack_os=$1
 spack_ver=$2
 spack_compiler=$3
 spack_build_threads=$4
+spack_arch=x86_64
+
+# 5th argument is optional to specify the architecture (e.g. arm64 instead of x86_64)
+[ ! -z "$5" ] && spack_arch="$5"
+
+spack_full_arch=linux-`echo ${spack_os}${spack_ver} | cut -f 1 -d .`-${spack_arch}
+echo "Building for arch=${spack_full_arch}"
 
 # Checkout primary spack repository (if needed)
 spack_top=/cvmfs/oasis.opensciencegrid.org/jlab/epsci/${spack_os}/${spack_ver}
@@ -105,7 +112,9 @@ SYSTEM_GCCVERSION=$(/usr/bin/gcc --version | grep ^gcc | cut -d ')' -f 2 | awk '
 echo "specified compiler=${spack_compiler}  SYSTEM_GCCVERSION=${SYSTEM_GCCVERSION}"
 [ ${spack_compiler} == 'system' ] && spack_compiler=${SYSTEM_GCCVERSION}
 if [ ${spack_compiler} != $SYSTEM_GCCVERSION ] ; then
-	spack install gcc@${spack_compiler} arch=x86_64 %gcc@${SYSTEM_GCCVERSION}
+	echo "spack install gcc@${spack_compiler} arch=${spack_full_arch} %gcc@${SYSTEM_GCCVERSION}"
+	spack install gcc@${spack_compiler} arch=${spack_full_arch} %gcc@${SYSTEM_GCCVERSION}
+	echo "spack load gcc@${spack_compiler}"
 	spack load gcc@${spack_compiler}
 	spack compiler find
 fi
@@ -124,8 +133,10 @@ fi
 packages="unzip lmod"
 
 for p in ${packages} ; do
-	spack install -j${spack_build_threads} $p %gcc@${spack_compiler} arch=x86_64
-	spack load $p %gcc@${spack_compiler} arch=x86_64
+	echo "spack install -j${spack_build_threads} $p %gcc@${spack_compiler} arch=${spack_full_arch}"
+	spack install -j${spack_build_threads} $p %gcc@${spack_compiler} arch=${spack_full_arch}
+	echo "spack load $p %gcc@${spack_compiler} arch=${spack_full_arch}"
+	spack load $p %gcc@${spack_compiler} arch=${spack_full_arch}
 done
 
 spack arch
