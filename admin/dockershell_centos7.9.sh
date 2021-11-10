@@ -9,7 +9,7 @@
 # This should work with any architecture (aarch64 or x86_64).
 #
 
-MYDIR=/Volumes/M1spack
+MYDIR=/Volumes/MySPACK
 #MYDIR=/Users/davidl/work/2021.11.03.spack/arm64
 
 spack_os=centos
@@ -22,9 +22,10 @@ echo "source ${spack_top}/share/spack/setup-env.sh"
 # If no .bashrc file exists in the directory being mounted as
 # /root then go ahead and create one that sets up the spack
 # environment so the user doesn't have to do it manually.
-if [ ! -f ${MYDIR}/root_home/.bashrc ] then;
+if [ ! -f ${MYDIR}/root_home/.bashrc ] ; then
 	echo "Adding .${MYDIR}/root_home/.bashrc ... "
-	echo "source ${spack_top}/share/spack/setup-env.sh" > ${MYDIR}/root_home/.bashrc
+	echo "export SPACK_ROOT=${spack_top}" > ${MYDIR}/root_home/.bashrc
+	echo "source ${spack_top}/share/spack/setup-env.sh" >> ${MYDIR}/root_home/.bashrc
 fi
 
 docker run -it --rm --platform=linux/arm64 \
