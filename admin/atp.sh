@@ -33,6 +33,10 @@ arch="linux-${spack_os}${spack_ver_major}-x86_64"
 
 echo "specifying arch as: ${arch}"
 
+# Setup to use spack repositories.
+spack_top=/cvmfs/oasis.opensciencegrid.org/jlab/epsci/${spack_os}/${spack_ver}
+source ${spack_top}/share/spack/setup-env.sh
+
 # Additional repositories (eic, epsci) are listed in a users
 # personal ~/.spack directory. These are automatically added 
 # by mnp.sh, but if a different user is runing this script
@@ -48,10 +52,6 @@ if [ -d ${epsci_spack_top} ] ; then
 	spack repo list | grep ${epsci_spack_top} > /dev/null
 	[ $? != 0 ] && echo "Adding epsci-spack repository to your personal config ..." && spack repo add ${epsci_spack_top}
 fi
-
-# Setup to use spack repositories.
-spack_top=/cvmfs/oasis.opensciencegrid.org/jlab/epsci/${spack_os}/${spack_ver}
-source ${spack_top}/share/spack/setup-env.sh
 
 # Load the compiler
 SYSTEM_GCCVERSION=$(/usr/bin/gcc --version | grep ^gcc | cut -d ')' -f 2 | awk '{print $1}')
@@ -79,7 +79,7 @@ while read p; do
 	# Here we insert the specific compiler in front of all instances of "^".
 	# This is to ensure the packages and dependencies are all built with
 	# the specified compiler. We also specify the generic target=x86_64.
-	p_with_compiler=$(echo $p | sed -e "s/\^/\%gcc@${spack_compiler}\^/g")
+	p_with_compiler=$(echo $p | sed -e "s/\^/ arch=${arch} \%gcc@${spack_compiler}\^/g")
 
 	# Print full concretization spec
 	cmd="spack spec $p_with_compiler %gcc@${spack_compiler} arch=${arch}"
