@@ -49,12 +49,24 @@ spack_os=$1
 spack_ver=$2
 spack_compiler=$3
 spack_build_threads=$4
+spack_arch=x86_64
+
+# 5th argument is optional to specify the architecture (e.g. arm64 instead of x86_64)
+[ ! -z "$5" ] && spack_arch="$5"
+
+spack_full_arch=linux-`echo ${spack_os}${spack_ver} | cut -f 1 -d .`-${spack_arch}
+echo "Building for arch=${spack_full_arch}"
 
 # Checkout primary spack repository (if needed)
 spack_top=/cvmfs/oasis.opensciencegrid.org/jlab/epsci/${spack_os}/${spack_ver}
 if [ ! -d ${spack_top} ] ; then
 	echo "Checking out primary spack repository ..."
 	git clone https://github.com/spack/spack.git ${spack_top}
+fi
+
+if [ ! -d ${spack_top}/etc/spack ] ; then
+	echo "Making config file directory "${spack_top}/etc/spack
+	mkdir -p ${spack_top}/etc/spack
 fi
 
 # Install a config.yaml file to override defaults. This is needed
@@ -64,7 +76,9 @@ if [ ! -f ${spack_top}/etc/spack/config.yaml ] ; then
 	cp config.yaml ${spack_top}/etc/spack/config.yaml
 fi
 
-# Source main spack environment setup script
+# Source main spack environment setup script. Note that when doing this
+# in docker with qemu-x we must set SPACK_ROOT first.
+export SPACK_ROOT=${spack_top}
 echo "Sourcing ${spack_top}/share/spack/setup-env.sh"
 source ${spack_top}/share/spack/setup-env.sh
 
@@ -98,7 +112,9 @@ SYSTEM_GCCVERSION=$(/usr/bin/gcc --version | grep ^gcc | cut -d ')' -f 2 | awk '
 echo "specified compiler=${spack_compiler}  SYSTEM_GCCVERSION=${SYSTEM_GCCVERSION}"
 [ ${spack_compiler} == 'system' ] && spack_compiler=${SYSTEM_GCCVERSION}
 if [ ${spack_compiler} != $SYSTEM_GCCVERSION ] ; then
-	spack install gcc@${spack_compiler} arch=x86_64 %gcc@${SYSTEM_GCCVERSION}
+	echo "spack install gcc@${spack_compiler} arch=${spack_full_arch} %gcc@${SYSTEM_GCCVERSION}"
+	spack install gcc@${spack_compiler} arch=${spack_full_arch} %gcc@${SYSTEM_GCCVERSION}
+	echo "spack load gcc@${spack_compiler}"
 	spack load gcc@${spack_compiler}
 	spack compiler find
 fi
@@ -108,8 +124,7 @@ fi
 # version.
 if [ ! -f ${spack_top}/etc/spack/modules.yaml ] ; then
 	echo "Copying modules.yaml to ${spack_top}/etc/spack/modules.yaml ..."
-	cat modules.yaml | sed -e "s/XXX/${SYSTEM_GCCVERSION}/g" > ${spack_top}/etc/spack/modules.yaml
-	#cp config.yaml ${spack_top}/etc/spack/config.yaml
+	cat modules.yaml | sed -e "s/XXX/${SYSTEM_GCCVERSION}/g" | sed -e "s/YYY/${spack_full_arch}/g" > ${spack_top}/etc/spack/modules.yaml
 fi
 
 # Make sure the directory exists for packages built with this compiler
@@ -123,8 +138,10 @@ mkdir -p ${spack_top}/opt/spack/linux-*-x86_64/gcc-${spack_compiler}
 packages="unzip lmod"
 
 for p in ${packages} ; do
-	spack install -j${spack_build_threads} $p %gcc@${spack_compiler} arch=x86_64
-	spack load $p %gcc@${spack_compiler} arch=x86_64
+	echo "spack install -j${spack_build_threads} $p %gcc@${spack_compiler} arch=${spack_full_arch}"
+	spack install -j${spack_build_threads} $p %gcc@${spack_compiler} arch=${spack_full_arch}
+	echo "spack load $p %gcc@${spack_compiler} arch=${spack_full_arch}"
+	spack load $p %gcc@${spack_compiler} arch=${spack_full_arch}
 done
 
 spack arch

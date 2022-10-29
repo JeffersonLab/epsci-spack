@@ -20,7 +20,7 @@ modules:
        - gcc
      blacklist:
        - '%gcc@XXX'
-       - 'arch=linux-centos7-zen2'
+       - 'arch=YYY'
      all:
        filter:
          environment_blacklist:
