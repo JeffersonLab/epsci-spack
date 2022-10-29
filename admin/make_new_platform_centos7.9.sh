@@ -3,7 +3,7 @@
 spack_os=centos
 spack_ver=7.9.2009
 spack_compiler=9.3.0
-spack_build_threads=16
+spack_build_threads=32
 
 source /etc/profile.d/modules.sh
 module load singularity
