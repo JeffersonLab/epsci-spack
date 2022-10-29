@@ -112,6 +112,12 @@ if [ ! -f ${spack_top}/etc/spack/modules.yaml ] ; then
 	#cp config.yaml ${spack_top}/etc/spack/config.yaml
 fi
 
+# Make sure the directory exists for packages built with this compiler
+# Oddly, spack does not seem to create this automatically and the 
+# throws errors when it starts trying to install packages with our
+# newly built compiler.
+mkdir -p ${spack_top}/opt/spack/linux-*-x86_64/gcc-${spack_compiler}
+
 
 # Install minimal set of packages
 packages="unzip lmod"
