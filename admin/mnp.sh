@@ -54,7 +54,10 @@ spack_arch=x86_64
 # 5th argument is optional to specify the architecture (e.g. arm64 instead of x86_64)
 [ ! -z "$5" ] && spack_arch="$5"
 
-spack_full_arch=linux-`echo ${spack_os}${spack_ver} | cut -f 1 -d .`-${spack_arch}
+# This should be used when spack_ver has 3 values. e.g. 7.7.1908
+#spack_full_arch=linux-`echo ${spack_os}${spack_ver} | cut -f 1 -d .`-${spack_arch}
+# This should be used when spack_ver has 2 values. e.g. 22.04
+spack_full_arch=linux-`echo ${spack_os}${spack_ver}`-${spack_arch}
 echo "Building for arch=${spack_full_arch}"
 
 # Checkout primary spack repository (if needed)
@@ -82,15 +85,17 @@ export SPACK_ROOT=${spack_top}
 echo "Sourcing ${spack_top}/share/spack/setup-env.sh"
 source ${spack_top}/share/spack/setup-env.sh
 
+# ---- Disable use of eic-spack repository since it replaces things
+# ---- like root , geant4, and jana2  2022-12-29 DL
 # Checkout eic-spack repository (if needed)
-eic_spack_top=${SPACK_ROOT}/var/spack/repos/eic-spack
-if [ ! -d ${eic_spack_top} ] ; then
-	echo "Checking out eic-spack repository ..."
-	git clone https://github.com/eic/eic-spack.git ${eic_spack_top}
-fi
+#eic_spack_top=${SPACK_ROOT}/var/spack/repos/eic-spack
+#if [ ! -d ${eic_spack_top} ] ; then
+#	echo "Checking out eic-spack repository ..."
+#	git clone https://github.com/eic/eic-spack.git ${eic_spack_top}
+#fi
 # Add eic-spack repo to our list if it is not already there
-spack repo list | grep ${eic_spack_top} > /dev/null
-[ $? != 0 ] && spack repo add ${eic_spack_top}
+#spack repo list | grep ${eic_spack_top} > /dev/null
+#[ $? != 0 ] && spack repo add ${eic_spack_top}
 
 # Checkout epsci-spack repository (if needed)
 epsci_spack_top=${SPACK_ROOT}/var/spack/repos/epsci-spack
@@ -124,7 +129,7 @@ fi
 # version.
 if [ ! -f ${spack_top}/etc/spack/modules.yaml ] ; then
 	echo "Copying modules.yaml to ${spack_top}/etc/spack/modules.yaml ..."
-	cat modules.yaml | sed -e "s/XXX/${SYSTEM_GCCVERSION}/g" | sed -e "s/YYY/${spack_full_arch}/g" > ${spack_top}/etc/spack/modules.yaml
+#	cat modules.yaml | sed -e "s/XXX/${SYSTEM_GCCVERSION}/g" | sed -e "s/YYY/${spack_full_arch}/g" > ${spack_top}/etc/spack/modules.yaml
 fi
 
 # Make sure the directory exists for packages built with this compiler
