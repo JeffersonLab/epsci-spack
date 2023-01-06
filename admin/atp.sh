@@ -28,7 +28,10 @@ spack_compiler=$3
 spack_build_threads=$4
 spack_packages_file=$5
 
-spack_ver_major="${spack_ver%%.*}"
+# This should be used when spack_ver has 3 values. e.g. 7.7.1908
+#spack_ver_major="${spack_ver%%.*}"
+# This should be used when spack_ver has 2 values. e.g. 22.04
+spack_ver_major=${spack_ver}
 arch="linux-${spack_os}${spack_ver_major}-x86_64"
 
 echo "specifying arch as: ${arch}"
@@ -86,13 +89,18 @@ while read p; do
 	echo $cmd
 	$cmd
 
-	# Create the full spack install command, print it, and run it.
-	cmd="spack install -j${spack_build_threads} $p_with_compiler %gcc@${spack_compiler} arch=${arch}"
+	# Add the package to the environment (install happens after all are added)
+	cmd="spack add $p_with_compiler %gcc@${spack_compiler} arch=${arch}"
 	echo $cmd
 	$cmd
 
 	#spack load ${p_with_compiler}%gcc@${spack_compiler} arch=${arch}
 done < "$spack_packages_file"
+
+# Install all packages in one go
+cmd="spack install -j${spack_build_threads}"
+echo $cmd
+$cmd
 
 # Print status
 spack arch
