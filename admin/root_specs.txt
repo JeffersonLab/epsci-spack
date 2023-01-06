@@ -1,0 +1,97 @@
+#
+# Specs for ROOT builds using spack
+#
+#--------------------------------------------------------------------
+#
+# In Bob's original ROOT compilation notes he lists the following
+# features as turned on:
+#
+#  roofit minuit2 pyroot gdml unrun qt qtgsi mysql reflex cintex fftw3 soversion mathmore
+#
+#
+# and the following as explicitly turned off:
+#
+#  shadowpw
+#
+#
+# I added the following features as on (gsl and mlp are required by tmva):
+#
+#  gsl mlp tmva
+#
+#
+# The spack root package file makes a subset of all features
+# available so there is not complete control over the build 
+# (unless we supercede the root package file in spack with our
+# own). Reviewing the existing package file though, most of 
+# these features are turned on(off) by default to match Bob's
+# settings. The discrepancies are: 
+#
+# 1. The spack package.py file for root says support for qt.
+#    was dropped after root 6.18.00 so we do not include 
+#    qt or qtgsi
+#
+# 2. Neither the reflex nor cintex features are mentioned in
+#    the package file or on the root website. I suspect they
+#    were dropped some time ago (or were made non-optional)
+#
+# 3. The packages minuit2, pyroot, fftw3, and mathmore are
+#    all turned on by the variants minuit, python, fftw,
+#    and math respectively. Furthermore, they are all on by
+#    default and so are not explicitly given in the spec here.
+#
+# 4. The mysql variant is turned off by default in spack so
+#    I turn it on here.
+#
+#--------------------------------------------------------------------
+#
+# Note that some packages (e.g. jana2) may be built with root
+# support. They should be made dependent on one of the root
+# versions built here so as not to accidentaly build another
+# version of root. To do this, find the hash for the root 
+# version you want to use and then use it explictly in the
+# spec for the package you are building.
+#
+#  e.g.
+#
+#  >spack find -l root
+#  ==> 2 installed packages
+#  -- linux-centos7-x86_64 / gcc@9.3.0 -----------------------------
+#  3l2zrwe root@6.20.04  nr7itny root@6.22.06
+#
+#  > spack spec jana2 +root^root/nr7itny
+#
+#--------------------------------------------------------------------
+#
+# To see which versions of root are available to build:
+#
+#  > spack versions root
+#
+#--------------------------------------------------------------------
+#
+# To build the new root package:
+#
+#  1. Make sure the add_to_platform_XXX.sh script is right (e.g. check compiler)
+#  2. Run the add_to_platform_XXX.sh script with this file as the only argument.
+#     e.g.
+#
+#    > ./add_to_platform_centos7.sh root_specs.txt
+#
+
+# Latest
+root@6.24.06+mysql+gsl+mlp+tmva target=x86_64 cxxstd=17 ^hwloc@2.1.0 target=x86_64
+
+# This looks to be left over from an earlier failed attempt
+# to build a more recent root version
+#root@6.24.00 cxxstd=11 +mysql+gsl+mlp+tmva^hwloc@2.1.0
+
+# Past version built
+# (this was done some time ago and I'm not actually sure how since the 
+# official root package in spack does not include 6.22.06. The spec
+# below came from running: spack spec /nr7itny)
+#root@6.22.06%gcc@9.3.0~aqua+davix~emacs+examples~fftw~fits~fortran+gdml+gminimal~graphviz+gsl~http~ipo~jemalloc+math~memstat+minuit~mlp~mysql+opengl~postgres~pythia6~pythia8+python~qt4~r+roofit~root7+rpath~shadow~spectrum~sqlite~ssl~table+tbb+threads~tmva+unuran~vc+vdt~vmc+x+xml~xrootd build_type=RelWithDebInfo cxxstd=11 patches=22af3471f3fd87c0fe8917bf9c811c6d806de6c8b9867d30a1e3d383a1b929d7 arch=linux-centos7-x86_64
+
+# Used by JLabCE-2-4.txt  
+#root@6.20.04 cxxstd=11 +mysql+gsl+mlp+tmva^hwloc@2.1.0
+
+# The following was used to build root 6.26.10 for Ubuntu 22.04
+# root@6.26.10 cxxstd=17 +gsl+mlp+tmva
