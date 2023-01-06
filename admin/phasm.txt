@@ -1,0 +1,15 @@
+#
+# This defines additional packages to install for use in the
+# PHASM project. Use it like this:
+#
+#    cd /scigroup/spack/admin
+#    ./add_to_platform_ubuntu22.sh PHASM_specs.txt
+#
+#
+# This was used for:
+#
+#      ubuntu 22.04
+#
+
+geant4@11.1.0 cxxstd=17 +x11+opengl
+root@6.26.10  cxxstd=17 +gsl+mlp+tmva
