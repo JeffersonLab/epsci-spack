@@ -52,16 +52,17 @@
 # but it seems better to make root a top-level package install.
   
 
-clhep@2.4.1.3  cxxstd=11
-xerces-c@3.2.3 cxxstd=11
-scons@2.5.1
-ccdb@1.06.06              ^scons@2.5.1^mysql@8.0.19
-qt@5.15.2
-root@6.20.04   cxxstd=11                        +mysql+gsl+mlp+tmva^hwloc@2.1.0
-jana@0.8.2                          ^root@6.20.04+mysql+gsl+mlp+tmva^hwloc@2.1.0 ^ccdb@1.06.06 ^mysql@8.0.19 ^xerces-c@3.2.3 cxxstd=11
-jana2@2.0.3              +zmq+root ^root@6.20.04+mysql+gsl+mlp+tmva^hwloc@2.1.0
-geant4@10.6.2  cxxstd=11
-geant4-data@10.6.2
+#clhep@2.4.1.3  cxxstd=11
+#xerces-c@3.2.3 cxxstd=11
+#scons@2.5.1
+boost cxxstd=11
+#ccdb@1.06.06              ^scons@2.5.1^mysql@8.0.19 cxxstd=11
+#qt@5.15.2
+#root@6.20.04   cxxstd=11                        +mysql+gsl+mlp+tmva^hwloc@2.1.0
+#jana@0.8.2                          ^root@6.20.04+mysql+gsl+mlp+tmva^hwloc@2.1.0 ^ccdb@1.06.06 ^mysql@8.0.19 ^xerces-c@3.2.3 cxxstd=11
+#jana2@2.0.3              +zmq+root ^root@6.20.04+mysql+gsl+mlp+tmva^hwloc@2.1.0
+#geant4@10.6.2  cxxstd=11
+#geant4-data@10.6.2
 
 
 #jana@0.8.2^xerces-c@3.2.3^root@6.20.04+mysql+gsl+mlp+tmva^hwloc@2.1.0^ccdb@1.06.06^scons@2.5.1^mysql@8.0.19
