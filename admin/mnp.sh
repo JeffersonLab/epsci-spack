@@ -54,14 +54,24 @@ spack_arch=x86_64
 # 5th argument is optional to specify the architecture (e.g. arm64 instead of x86_64)
 [ ! -z "$5" ] && spack_arch="$5"
 
+#------------------------------------------------------------------------------
+# The following tries to match what spack will automatically determine the
+# operating_system to be. This is important since it will add this to the
+# compilers.yaml file and then filter on it when we specify an arch later.
+# It is done here so we can make the proper directory name to clone the
+# spack repository into.
+#
 # This should be used when spack_ver has 3 values. e.g. 7.7.1908
 #spack_full_arch=linux-`echo ${spack_os}${spack_ver} | cut -f 1 -d .`-${spack_arch}
-# This should be used when spack_ver has 2 values. e.g. 22.04
-spack_full_arch=linux-`echo ${spack_os}${spack_ver}`-${spack_arch}
+# This should be used when spack_ver has 3 values with a "-". e.g. 9.2-20230718
+#spack_full_arch=linux-`echo ${spack_os}${spack_ver} | cut -f 1 -d -`-${spack_arch}
+# This should be used when spack_ver has 2 values. e.g. 9.3 (spack will just use "9")
+spack_full_arch=linux-`echo ${spack_os}${spack_ver} | cut -f 1 -d .`-${spack_arch}
 echo "Building for arch=${spack_full_arch}"
+#------------------------------------------------------------------------------
 
 # Checkout primary spack repository (if needed)
-spack_top=/cvmfs/oasis.opensciencegrid.org/jlab/epsci/${spack_os}/${spack_ver}
+spack_top=/cvmfs/oasis.opensciencegrid.org/jlab/epsci/spack/${spack_os}/${spack_ver}
 if [ ! -d ${spack_top} ] ; then
 	echo "Checking out primary spack repository ..."
 	git clone https://github.com/spack/spack.git ${spack_top}
